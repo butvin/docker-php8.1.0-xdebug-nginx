@@ -1,0 +1,10 @@
+.DS_Store
+.idea
+/.infrastructure/.db
+/.env.local
+/.env.local.php
+/.env.*.local
+/.env.prod
+/.env.dev
+/public/
+/vendor/

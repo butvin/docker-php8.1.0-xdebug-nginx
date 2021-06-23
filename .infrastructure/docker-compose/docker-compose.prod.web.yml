@@ -1,0 +1,21 @@
+version: "2"
+
+services:
+    nginx:
+        ports:
+            - 80:80
+
+        build:
+            args:
+                env: prod
+        volumes:
+            - /var/log/nginx:/var/log/nginx/
+        restart: always
+
+    php_fpm:
+        build:
+            args:
+                env: prod
+        volumes:
+            - ../..:/application
+        restart: always
