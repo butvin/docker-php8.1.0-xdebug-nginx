@@ -1,6 +1,6 @@
 .DS_Store
 .idea
-/.infrastructure/.db
+/.docker-data/.db
 /.env.local
 /.env.local.php
 /.env.*.local

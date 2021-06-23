@@ -68,17 +68,17 @@ RUN DEBIAN_FRONTEND=noninteractive \
 # Install PHP Redis extension
 RUN pecl install -o -f redis \
   &&  rm -rf /tmp/pear \
-  &&  docker-php-ext-enable redis
+  &&  docker-php-ext-enable redis \
 
 # Composer
-    && curl -sS https://getcomposer.org/installer | php --\
-        --filename=composer \
-    && mv composer.phar /usr/local/bin/composer \
-    && chmod 755 /usr/local/bin/composer \
-    && chown www-data:www-data $COMPOSER_HOME \
-    && chown www-data:www-data $COMPOSER_HOME -R \
-    && chmod 775 $COMPOSER_HOME \
-    && chmod 775 $COMPOSER_HOME -R \
+#    && curl -sS https://getcomposer.org/installer | php --\
+#        --filename=composer \
+#    && mv composer.phar /usr/local/bin/composer \
+#    && chmod 755 /usr/local/bin/composer \
+#    && chown www-data:www-data $COMPOSER_HOME \
+#    && chown www-data:www-data $COMPOSER_HOME -R \
+#    && chmod 775 $COMPOSER_HOME \
+#    && chmod 775 $COMPOSER_HOME -R \
 
 # Composer
 RUN curl -sS https://getcomposer.org/installer | php -- \
