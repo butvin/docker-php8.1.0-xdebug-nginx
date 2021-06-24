@@ -6,24 +6,18 @@ ENV COMPOSER_HOME=/usr/local/composer \
 ARG env
 
 RUN DEBIAN_FRONTEND=noninteractive \
-    apt-get -y --force-yes update && \
-    apt-get -y --force-yes --no-install-recommends install \
-        librabbitmq-dev \
-        libimage-exiftool-perl \
-        libzip-dev \
-        zip \
-        curl \
-        wget \
-        git \
-        unzip \
-        p7zip-full \
-        openssl \
-        sendmail \
-        g++ \
-        apt-utils \
-        libmcrypt-dev \
-        vim \
-        tree \
+    apt-get -y update && \
+    apt-get -y --no-install-recommends install \
+        librabbitmq-dev libimage-exiftool-perl libzip-dev zip curl wget git \
+        unzip p7zip-full openssl sendmail apt-transport-https aptitude apt-utils \
+        libmcrypt-dev vim tree htop \
+#
+        g++ make gcc rar ssh
+#
+        php php-dev php-cli php-fpm php-common php-json php-pdo php-mysql \
+        php-zip php-gd php-mbstring php-curl php-xml php-pear php-bcmath \
+        php-intl php-interbase php-readline php-opcache php-xml php-xmlrpc \
+# php-codesniffer
 && phpModules=" \
         bcmath \
         bz2 \
@@ -34,43 +28,36 @@ RUN DEBIAN_FRONTEND=noninteractive \
         gmp \
         imap \
         intl \
-        ldap \
         mysqli \
-        opcache \
-        pcntl \
+#        opcache \
         pdo_mysql \
-        pdo_pgsql \
         pgsql \
         pspell \
         shmop \
         snmp \
         soap \
         sockets \
-        sysvmsg \
-        sysvsem \
-        sysvshm \
         tidy \
         xsl \
         zip \
     " \
+
     && docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp \
-    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
-    && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
+#    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
+#    && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install -j$(nproc) $phpModules \
     && pecl install xdebug\
     && pecl install memcached \
     && pecl install amqp \
-    && pecl install apcu \
-    && pecl install igbinary \
     && pecl install mongodb \
-    && docker-php-ext-enable amqp zip mysqli pdo pdo_mysql opcache xdebug mongodb \
+    && docker-php-ext-enable amqp zip mysqli pdo pdo_mysql opcache xdebug \
 
-# Install PHP Redis extension
+# REDIS
 RUN pecl install -o -f redis \
   &&  rm -rf /tmp/pear \
   &&  docker-php-ext-enable redis \
 
-# Composer
+# COMPOSER
 #    && curl -sS https://getcomposer.org/installer | php --\
 #        --filename=composer \
 #    && mv composer.phar /usr/local/bin/composer \
@@ -80,7 +67,7 @@ RUN pecl install -o -f redis \
 #    && chmod 775 $COMPOSER_HOME \
 #    && chmod 775 $COMPOSER_HOME -R \
 
-# Composer
+# COMPOSER
 RUN curl -sS https://getcomposer.org/installer | php -- \
         --filename=composer \
         --install-dir=/usr/local/bin \
@@ -90,8 +77,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
     && chown www-data:www-data $COMPOSER_HOME -R \
     && chmod 775 $COMPOSER_HOME \
     && chmod 775 $COMPOSER_HOME -R \
-    && echo "alias composer='COMPOSER_MEMORY_LIMIT=-1 composer'" >> /root/.bashrc && \
-        composer
+    && echo "alias composer='COMPOSER_MEMORY_LIMIT=-1 composer'" >> /root/.bashrc \
+    && composer \
 
 RUN echo "sendmail_path=/usr/sbin/sendmail -t -i" >> /usr/local/etc/php/conf.d/sendmail.ini
 RUN sed -i '/#!\/bin\/sh/aservice sendmail restart' /usr/local/bin/docker-php-entrypoint
